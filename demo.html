@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Money Counting for Trip</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 10px;
+      text-align: center;
+    }
+    * {
+  box-sizing: border-box;
+  
+}
+
+
+body {
+  color : white;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+   background-image: url('https://i.ibb.co/tZYjKtG/3479479.jpg');
+  background-size: cover;
+  background-position: auto;
+  background-repeat: no-repeat;
+  position: relative;
+  }
+
+body::before {
+  content: "";
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+label {
+  flex-basis: calc(33.33% - 10px);
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+}
+
+button[type="button"] {
+  background-color: #4CAF50;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#category {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+  background-color: orange;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.remove-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Money Counting for Trip</h1>
+  <form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name"><br><br>
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+      <option value="food">Food</option>
+      <option value="accommodation">Accommodation</option>
+      <option value="transportation">Transportation</option>
+      <option value="entertainment">Entertainment</option>
+    </select><br><br>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount"><br><br>
+    <button type="button" onclick="addEntry()">Add Entry</button>
+  </form>
+  <br><br>
+  <table id="entries">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table data will be added dynamically using JavaScript -->
+    </tbody>
+  </table>
+  <script>
+    // Get table body element
+    var tableBody = document.querySelector("#entries tbody");
+  // Function to add entry to table
+  function addEntry() {
+    // Get input values
+    var name = document.querySelector("#name").value;
+    var category = document.querySelector("#category").value;
+    var amount = document.querySelector("#amount").value;
+
+    // Create new row element
+    var newRow = document.createElement("tr");
+
+    // Add table data to row element
+    var nameData = document.createElement("td");
+    nameData.textContent = name;
+    newRow.appendChild(nameData);
+
+    var categoryData = document.createElement("td");
+    categoryData.textContent = category;
+    newRow.appendChild(categoryData);
+
+    var amountData = document.createElement("td");
+    amountData.textContent = amount;
+    newRow.appendChild(amountData);
+
+    // Add remove button to row element
+    var removeButton = document.createElement("button");
+    removeButton.textContent = "Remove";
+    removeButton.addEventListener("click", function() {
+      tableBody.removeChild(newRow);
+    });
+    var removeData = document.createElement("td");
+    removeData.appendChild(removeButton);
+    newRow.appendChild(removeData);
+
+    // Add row element to table body
+    tableBody.appendChild(newRow);
+
+    // Clear input fields
+    document.querySelector("#name").value = "";
+    document.querySelector("#category").value = "food";
+    document.querySelector("#amount").value = "";
+  }
+
+  // Load table data from local storage
+  if (localStorage.getItem("tableData")) {
+    tableBody.innerHTML = localStorage.getItem("tableData");
+  }
+
+  // Save table data to local storage on every change
+  setInterval(function() {
+    localStorage.setItem("tableData", tableBody.innerHTML);
+  }, 1000);
+</script>
+</body>
+</html>
