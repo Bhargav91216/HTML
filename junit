@@ -1,0 +1,195 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
+import org.springframework.oxm.XmlMappingException;
+import org.springframework.ws.client.core.WebServiceTemplate;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class JourneyScheduleUpdaterTest {
+
+    @Mock
+    private WebServiceTemplate webServiceTemplate;
+
+    @InjectMocks
+    private JourneyScheduleUpdater journeyScheduleUpdater;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testUpdateTMCCustomerJourney_Successful() throws Exception {
+        // Mocked request and response objects
+        JourneySchedule importRequest = new JourneySchedule();
+        ImportJourneyScheduleResponse jaxbResponse = new ImportJourneyScheduleResponse();
+
+        // Mock the behavior of the webServiceTemplate
+        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(JAXBElement.class)))
+                .thenReturn(jaxbResponse);
+
+        // Invoke the method under test
+        Optional<ImportJourneyScheduleResponse> result = journeyScheduleUpdater.updateTMCCustomerJourney(importRequest);
+
+        // Verify the behavior
+        assertTrue(result.isPresent());
+        assertEquals(jaxbResponse, result.get());
+
+        // Verify that the webServiceTemplate method was called with the expected arguments
+        ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<JAXBElement> jaxbRequestCaptor = ArgumentCaptor.forClass(JAXBElement.class);
+        verify(webServiceTemplate).marshalSendAndReceive(urlCaptor.capture(), jaxbRequestCaptor.capture());
+
+        assertEquals("microliseHosttmcJourneyUpdateEndpoint", urlCaptor.getValue());
+        assertEquals(importRequest, jaxbRequestCaptor.getValue().getValue());
+        assertEquals(new QName("tmcNamespace", "tmcNamespaceLocalName"), jaxbRequestCaptor.getValue().getName());
+    }
+
+    @Test
+    void testUpdateTMCCustomerJourney_ResponseNull() throws Exception {
+        // Mocked request object
+        JourneySchedule importRequest = new JourneySchedule();
+
+        // Mock the behavior of the webServiceTemplate to return null response
+        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(JAXBElement.class)))
+                .thenReturn(null);
+
+        // Invoke the method under test
+        Optional<ImportJourneyScheduleResponse> result = journeyScheduleUpdater.updateTMCCustomerJourney(importRequest);
+
+        // Verify the behavior
+        assertFalse(result.isPresent());
+
+        // Verify that the webServiceTemplate method was called with the expected arguments
+        ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<JAXBElement> jaxbRequestCaptor = ArgumentCaptor.forClass(JAXBElement.class);
+        verify(webServiceTemplate).marshalSendAndReceive(urlCaptor.capture(), jaxbRequestCaptor.capture());
+
+        assertEquals("microliseHosttmcJourneyUpdateEndpoint", urlCaptor.getValue());
+        assertEquals(importRequest, jaxbRequestCaptor.getValue().getValue());
+        assertEquals(new QName("tmcNamespace", "tmcNamespaceLocalName"), jaxbRequestCaptor.getValue().getName());
+    }
+
+    @Test
+    void testUpdateTMCCustomerJourney_ExceptionThrown() throws Exception {
+        // Mocked request object
+        JourneySchedule importRequest = new JourneySchedule();
+
+        // Mock the behavior of the webServiceTemplate to throw an exception
+        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(JAXBElement.class)))
+                .thenThrow(XmlMappingException.class);
+
+        // Invoke the method under test
+        assertThrows(Exception.class, () -> journeyScheduleUpdater.updateTMCCustomerJourney(importRequest));
+
+        // Verify that the webServiceTemplate method was called with the expected arguments
+        ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<JAXBElement> jaxbRequestCaptor = ArgumentCaptor.forClass(JAXBElement.class);
+        verify(webServiceTemplate).marshalSendAndReceive(urlCaptor.capture(), jaxbRequestCaptor.capture());
+
+        assertEquals("microliseHosttmcJourneyUpdateEndpoint", urlCaptor.getValue());
+        assertEquals(importRequest, jaxbRequestCaptor.getValue().getValue());
+        assertEquals(new QName("tmcNamespace", "tmcNamespaceLocalName"), jaxbRequestCaptor.getValue().getName());
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///2nd one 
+
+
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.integration.file.remote.handler.FileTransferringMessageHandler;
+import org.springframework.integration.sftp.session.CachingSessionFactory;
+import org.springframework.integration.sftp.session.SftpSession;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.MessagingException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+class SftpMessageHandlerTest {
+
+    @Mock
+    private CachingSessionFactory<LsEntry> cachingSessionFactory;
+
+    @InjectMocks
+    private SftpMessageHandler sftpMessageHandler;
+
+    @Captor
+    private ArgumentCaptor<Message<?>> messageCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> remoteDirectoryCaptor;
+
+    @Captor
+    private ArgumentCaptor<FileTransferringMessageHandler<String>> handlerCaptor;
+
+    public SftpMessageHandlerTest() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testHandler() {
+        // Mock the necessary dependencies
+        ExpressionParser expressionParser = mock(ExpressionParser.class);
+        SftpSession sftpSession = mock(SftpSession.class);
+        when(cachingSessionFactory.getSession()).thenReturn(sftpSession);
+        when(expressionParser.parseExpression(anyString())).thenReturn(mock(Expression.class));
+
+        // Set up the SftpMessageHandler
+        sftpMessageHandler.setRemoteDirectoryExpression(expressionParser.parseExpression("remoteDirectory"));
+        sftpMessageHandler.setAutoCreateDirectory(true);
+        sftpMessageHandler.setLoggingEnabled(true);
+        sftpMessageHandler.setUseTemporaryFileName(false);
+        sftpMessageHandler.setFileNameGenerator(message -> (String) message.getHeaders().get("fileName"));
+
+        // Create a sample message
+        MessageHeaders headers = new MessageHeaders(null);
+        Message<String> message = new Message<>("Test message", headers);
+
+        // Invoke the handler method
+        MessageHandler handler = sftpMessageHandler.handler(cachingSessionFactory);
+        handler.handleMessage(message);
+
+        // Verify the behavior
+        verify(cachingSessionFactory).getSession();
+        verify(sftpSession).write(
+                messageCaptor.capture(),
+                remoteDirectoryCaptor.capture(),
+                handlerCaptor.capture()
+        );
+
+        assertEquals(message, messageCaptor.getValue());
+        assertEquals("remoteDirectory", remoteDirectoryCaptor.getValue());
+        assertEquals(sftpMessageHandler, handlerCaptor.getValue());
+    }
+}
