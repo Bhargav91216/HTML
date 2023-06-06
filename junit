@@ -1,6 +1,9 @@
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.util.Iterator;
 
 public class JSONKeyPrinter {
     public static void main(String[] args) {
@@ -19,24 +22,28 @@ public class JSONKeyPrinter {
                 "    }\n" +
                 "  ]\n" +
                 "}";
+
+        JSONParser parser = new JSONParser();
         try {
-            JSONObject json = new JSONObject(jsonString);
-            printKeys(json);
-        } catch (JSONException e) {
+            Object obj = parser.parse(jsonString);
+            JSONObject jsonObject = (JSONObject) obj;
+            printKeys(jsonObject);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     private static void printKeys(JSONObject jsonObject) {
-        for (String key : jsonObject.keySet()) {
+        Iterator<?> keys = jsonObject.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
             System.out.println(key);
             Object value = jsonObject.get(key);
             if (value instanceof JSONObject) {
                 printKeys((JSONObject) value); // Recursively call printKeys for nested JSON objects
             } else if (value instanceof JSONArray) {
                 JSONArray jsonArray = (JSONArray) value;
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Object arrayValue = jsonArray.get(i);
+                for (Object arrayValue : jsonArray) {
                     if (arrayValue instanceof JSONObject) {
                         printKeys((JSONObject) arrayValue); // Recursively call printKeys for nested JSON objects in arrays
                     }
