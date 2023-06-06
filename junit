@@ -1,38 +1,47 @@
-I apologize for the confusion. It seems that there are a couple of issues with the code you provided, which may be causing the "IllegalArgumentException" error. Let's go through the code and identify the problems:
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-java
-Copy code
-@SuppressWarnings("unchecked")
-public Optional<ImportJourneyScheduleResponse> updateTMCJourney(JourneySchedule importRequest)
-        throws FulfilmentJourneyMediationAPIException, ParserConfigurationException, SoapBodyException,
-        XmlMappingException, IOException {
+public class JSONKeyPrinter {
+    public static void main(String[] args) {
+        String jsonString = "{\n" +
+                "  \"key1\": \"value1\",\n" +
+                "  \"key2\": \"value2\",\n" +
+                "  \"key3\": {\n" +
+                "    \"nestedKey1\": \"nestedValue1\",\n" +
+                "    \"nestedKey2\": \"nestedValue2\"\n" +
+                "  },\n" +
+                "  \"key4\": [\n" +
+                "    \"arrayValue1\",\n" +
+                "    \"arrayValue2\",\n" +
+                "    {\n" +
+                "      \"nestedKey3\": \"nestedValue3\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        try {
+            JSONObject json = new JSONObject(jsonString);
+            printKeys(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-    var qName = new QName(tmcNamespace, tmcNamespaceLocalName);
-    JAXBElement<JourneyScheduleImport> jaxbRequest = new JAXBElement<>(qName, JourneyScheduleImport.class, request);
-    log.info("Initiating TMC journey update SOAP API call");
-
-    ImportJourneyScheduleResponse jaxbResponse = (ImportJourneyScheduleResponse) webServiceTemplate
-            .marshalSendAndReceive(microliseHost.concat(tmcJourneyUpdateEndpoint), jaxbRequest);
-
-    return (jaxbResponse != null) ? Optional.of(jaxbResponse) : Optional.empty();
+    private static void printKeys(JSONObject jsonObject) {
+        for (String key : jsonObject.keySet()) {
+            System.out.println(key);
+            Object value = jsonObject.get(key);
+            if (value instanceof JSONObject) {
+                printKeys((JSONObject) value); // Recursively call printKeys for nested JSON objects
+            } else if (value instanceof JSONArray) {
+                JSONArray jsonArray = (JSONArray) value;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Object arrayValue = jsonArray.get(i);
+                    if (arrayValue instanceof JSONObject) {
+                        printKeys((JSONObject) arrayValue); // Recursively call printKeys for nested JSON objects in arrays
+                    }
+                }
+            }
+        }
+    }
 }
-Missing Variable Declaration: In the code, request is being used instead of importRequest. Make sure to update it to match the method parameter name:
-
-java
-Copy code
-JAXBElement<JourneyScheduleImport> jaxbRequest = new JAXBElement<>(qName, JourneyScheduleImport.class, importRequest);
-Missing @Autowired Annotation: The webServiceTemplate field needs to be annotated with @Autowired to inject the dependency correctly. Make sure to add the annotation:
-
-java
-Copy code
-@Autowired
-private WebServiceTemplate webServiceTemplate;
-Checking for Incorrect Variable Name: It seems that the code is using a variable called tmcJourneyUpdateEndpoint, but it's not defined in the given code snippet. Ensure that the variable is properly declared and initialized.
-
-Once you address these issues, the "IllegalArgumentException" error should be resolved. Remember to also ensure that the necessary dependencies are properly set up for your test environment.
-
-
-
-
-
-Regenerate response
