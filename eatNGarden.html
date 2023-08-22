@@ -26,18 +26,20 @@
         .contact-info p {
             margin: 0;
         }
+        .additional-div {
+            display: none;
+        }
 
         @media (max-width: 768px) {
            .contact-info {
-        flex-direction: column;
-        align-items: center; /* Center horizontally on mobile */
-        margin-top: 10px;
-    }
+                display: none;
+        }
 
-    .contact-info p {
-        margin-top: 10px; /* Add spacing between logo and contact info */
-    }
-
+   .additional-div {
+                display: block;
+                margin-top: 5px;
+                text-align: left;
+            }
     .logo {
         margin-top: 20px; /* Add spacing between logo and contact info */
     }
@@ -68,7 +70,7 @@
         }
 
         .item__title {
-            font: 25px cookie, cursive;
+            font: 25px cookie, serif;
             color: var(--wesbos);
             letter-spacing: 2px;
             margin: 0;
@@ -82,7 +84,7 @@
 
         .item__price {
             color: var(--wesbos);
-            font: 21px cookie, cursive;
+            font: 21px cookie, serif;
         }
 
         .item__description {
@@ -151,12 +153,14 @@
             padding: 20px;
             box-sizing: border-box; /* Ensure padding doesn't affect width */
         }
-
+        .header-container{
+            padding: 0px;
+        }
         h2 {
             display: inline-block;
             border-bottom: 4px solid var(--wesbos);
             margin-top: 0;
-            font: 35px cookie, cursive;
+            font: 35px cookie, serif;
         }
     </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -171,6 +175,13 @@
         <div class="contact-info">
             <!-- Add your contact information here -->
             <p><i class="fa fa-phone" style="font-size:18px;color:WHITE"></i> Contact : 9396318149</p>
+        </div>
+    </div>
+    <div class="additional-div">
+        <!-- Add content for the new div here -->
+    <div class="contact-info2">
+            <!-- Add your contact information here -->
+            <p><i class="fa fa-phone" style="font-size:18px;color:green"></i> Contact : 9396318149</p>
         </div>
     </div>
     <h2>Our Menu</h2>
@@ -354,6 +365,10 @@
     window.addEventListener('load', () => {
         const activeButton = document.querySelector('.button--is-active');
         updateHighlightPosition(activeButton);
+        
+        // Show the menu associated with the initially active button
+        const targetMenu = document.querySelector(`#${activeButton.dataset.target}`);
+        targetMenu.classList.add('menu--is-visible');
     });
 
     // Add event listeners to buttons
