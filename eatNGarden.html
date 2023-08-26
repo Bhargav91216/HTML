@@ -10,6 +10,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 40px;
         }
 
         .logo {
@@ -17,6 +18,17 @@
             height: auto;
             margin-left: 0px;
         }
+
+        @media (max-width: 768px) {
+    .logo {
+        justify-content: center;
+        max-width: 80%; /* Adjust the maximum width as needed for mobile view */
+    }
+    .header-container {
+            margin-bottom: 20px;
+        }
+
+}
 
         .contact-info {
             display: flex;
@@ -95,14 +107,15 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 20%;
         }
 
-        @media (min-width: 768px) {
-            .buttons-container {
-                margin-bottom: 30px;
+            @media (min-width: 768px) {
+                .buttons-container {
+                    size: 20px;
+                    margin-bottom: 30px;
+                }
             }
-        }
 
         .button {
             margin: 5px 15px;
@@ -115,6 +128,22 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
+    @media (max-width: 768px) {
+    .buttons-container {
+        margin-bottom: 10%;
+        display: flex;
+        flex-wrap: nowrap; /* Prevent wrapping to multiple lines */
+        justify-content: center; /* Center-align the buttons horizontally */
+        overflow-x: auto; /* Add horizontal scroll if needed */
+    }
+    /* Adjust the font size and padding of buttons to make them smaller */
+    .button {
+        margin: 5px 10px;
+        padding: 4px 8px;
+        white-space: nowrap; /* Prevent text from wrapping */
+    }
+}
+
 
         /* Add background color and shadow to menu items */
         .item {
@@ -323,6 +352,19 @@
 .tooltip tr:nth-child(even) {
     background-color: rgba(200, 200, 200, 0.3);
 }
+@media (max-width: 768px) {
+    .item {
+        font-size: 16px; /* Adjust the font size as needed */
+        padding: 3px 3px; /* Adjust the padding as needed */
+        margin-bottom: 10px; /* Adjust the margin as needed */
+    }
+}
+
+.tooltip .item-name {
+    text-align: center; /* Center-align the item name */
+    font-size: 14px; /* Adjust the font size as needed */
+    margin-bottom: 5px; /* Add some spacing between the item name and the table */
+}
 
     </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -331,7 +373,8 @@
 <div class="wrapper">
     <div class="header-container">
         <!-- Logo Image on the left -->
-        <img class="logo" src="https://i.ibb.co/hWMgqLD/eatngarden.png" alt="EAT N GARDEN Logo">
+       <!--<img class="logo"  src="https://i.ibb.co/cXP7h22/Eat-NGarden-V1.png" alt="Eat-NGarden-V1" border="0"> -->
+         <img class="logo" src="https://i.ibb.co/hWMgqLD/eatngarden.png" alt="EAT N GARDEN Logo">
 
         <!-- Contact information on the right -->
         <div class="contact-info">
@@ -343,7 +386,7 @@
         <!-- Add content for the new div here -->
     <div class="contact-info2">
             <!-- Add your contact information here -->
-            <p><i class="fa fa-phone" style="font-size:18px;color:green"></i> Contact : 9396318149</p>
+            <a href="tel:9396318149" style="color: green"><i class="fa fa-phone" style="font-size:18px;color:green"></i> Contact : 9396318149</a>
         </div>
     </div>
     <h2>Our Menu</h2>
@@ -674,72 +717,76 @@
     };
 
     // Function to create a tooltip and display nutritional details on hover
-    function createTooltip(itemName) {
-        const item = nutritionalData[itemName];
-        if (!item) return; // Item not found in nutritional data
+   // Function to create a tooltip and display nutritional details on click
+function createTooltip(itemName) {
+    const item = nutritionalData[itemName];
+    if (!item) return; // Item not found in nutritional data
 
-        const tooltip = document.createElement('div');
-        tooltip.classList.add('tooltip');
-        tooltip.innerHTML = `
-            <table>
-                <tr>
-                    <th>Nutrition</th>
-                    <th>Amount</th>
-                </tr>
-                <tr>
-                    <td>Calories</td>
-                    <td>${item.calories}</td>
-                </tr>
-                <tr>
-                    <td>Protein</td>
-                    <td>${item.protein}g</td>
-                </tr>
-                <tr>
-                    <td>Carbs</td>
-                    <td>${item.carbs}g</td>
-                </tr>
-                <tr>
-                    <td>Fat</td>
-                    <td>${item.fat}g</td>
-                </tr>
-                <tr>
-                    <td>Fiber</td>
-                    <td>${item.fiber}g</td>
-                </tr>
-                <tr><td colspan="2" color:red;> note:it is approximate details</td> </tr>
-            </table>
-        `;
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('tooltip');
+    tooltip.innerHTML = `
+        <p class="item-name" style:"text=center;">${itemName}</p> <!-- Add item name here -->
+        <table>
+            <tr>
+                <th>Nutrition</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Calories</td>
+                <td>${item.calories}</td>
+            </tr>
+            <tr>
+                <td>Protein</td>
+                <td>${item.protein}g</td>
+            </tr>
+            <tr>
+                <td>Carbs</td>
+                <td>${item.carbs}g</td>
+            </tr>
+            <tr>
+                <td>Fat</td>
+                <td>${item.fat}g</td>
+            </tr>
+            <tr>
+                <td>Fiber</td>
+                <td>${item.fiber}g</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="color:red;">Note: These are approximate details.</td>
+            </tr>
+        </table>
+    `;
 
-        return tooltip;
-    }
+    return tooltip;
+}
 
    
   
 
 
+const menuItems = document.querySelectorAll('.item');
 
-const menuItems = document.querySelectorAll('.item__title');
-        menuItems.forEach((menuItem) => {
-            menuItem.addEventListener('mouseover', (e) => {
-                const itemName = e.target.textContent;
-                const tooltip = createTooltip(itemName);
-                if (tooltip) {
-                    // Position the tooltip in the middle of the menu item
-                    const itemCoords = e.target.getBoundingClientRect();
-                    tooltip.style.top = `${itemCoords.top + itemCoords.height / 2}px`;
-                    tooltip.style.left = `${itemCoords.left + itemCoords.width / 2}px`;
-
-                    e.target.appendChild(tooltip);
-                }
-            });
-
-            menuItem.addEventListener('mouseout', (e) => {
-                const tooltip = e.target.querySelector('.tooltip');
-                if (tooltip) {
-                    tooltip.remove();
-                }
-            });
+menuItems.forEach((menuItem) => {
+    menuItem.addEventListener('click', (e) => {
+        const itemName = menuItem.querySelector('.item__title').textContent;
+        const tooltip = createTooltip(itemName);
+        
+        // Close previously opened tooltips
+        document.querySelectorAll('.tooltip').forEach((existingTooltip) => {
+            existingTooltip.remove();
         });
+
+        if (tooltip) {
+            // Position the tooltip in the middle of the menu item
+            const itemCoords = menuItem.getBoundingClientRect();
+            tooltip.style.top = `${itemCoords.top + itemCoords.height / 2}px`;
+            tooltip.style.left = `${itemCoords.left + itemCoords.width / 2}px`;
+
+            menuItem.appendChild(tooltip);
+        }
+    });
+});
+
 
   // Add event listeners to buttons
     buttons.forEach(button => button.addEventListener('click', handleClick));
