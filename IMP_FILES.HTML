@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .filter_links {
+      margin-top: 18px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filter_links ul {
+      position: relative;
+      overflow-x: auto;
+      list-style: none;
+      display: flex;
+      background: #1f1f1f;
+      border-radius: 12px;
+    }
+
+    .active_box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(0px);
+      z-index: 1;
+      width: 120px;
+      height: 100%;
+      background: crimson;
+      border-radius: 12px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .filter_links ul li {
+      width: 120px;
+      z-index: 2;
+      text-align: center;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      padding: 8px 0px;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+
+    .filter_image_container {
+      margin-top: 12px;
+      padding-inline: 20px;
+      max-width: 100%;
+      column-count: 3;
+      column-gap: 0px;
+    }
+
+    .filter_image_container img {
+      transition: width 0.3s height 0.4s ease-out;
+      width: 100%;
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .image_box {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.5s ease;
+    }
+
+    .hide_image {
+      display: none;
+    }
+
+    @media screen and (max-width: 768px) {
+      .filter_links {
+        padding-block: 12px;
+        margin-top: 18px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .filter_image_container {
+        margin-top: 12px;
+        padding-inline: 20px;
+        max-width: 100%;
+        column-count: 2;
+        column-gap: 0px;
+      }
+      .active_box {
+        width: 70px;
+      }
+
+      .filter_links ul li {
+        width: 70px;
+        padding: 6px 0px;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+
+    .image-overlay {
+  position: relative;
+  display: inline-block;
+}
+
+.image-overlay img {a
+  width: 100%;
+  height: auto;
+}
+
+.image-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+}
+/* Full-screen modal styles */
+.fullscreen-modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.hide {
+  display: none;
+}
+ .highlight {
+      border: 20px;
+       animation: flowingBorder 1s linear infinite;
+    }
+    @keyframes flowingBorder {
+      0%, 100% {
+        border: 20px solid black;
+      }
+      20% {
+        border: 20px solid silver;
+      }
+      40% {
+        border: 20px solid gray;
+      }
+      60% {
+        border: 20px solid darkgray;
+      }
+      80% {
+        border: 20px solid white;
+      }
+    }
+    .download-button {
+  position: fixed;
+  left: 10px; /* Adjust the left position as needed */
+  bottom: 10px; /* Adjust the bottom position as needed */
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.download-button {
+  position: fixed;
+  left: 10px; /* Adjust the left position as needed */
+  bottom: 10px; /* Adjust the bottom position as needed */
+  background: #3498db; /* Background color */
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  transition: background 0.3s ease; /* Smooth background color transition */
+}
+
+/* Style for the down arrow */
+.download-arrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid white;
+}
+
+.download-button:hover {
+  background: #2980b9; /* Background color on hover */
+}
+ .circular-button {
+      position: fixed;
+      left: 10px; /* Adjust the left position as needed */
+      bottom: 10px; /* Adjust the bottom position as needed */
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Style for the down arrow */
+    .down-arrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid white;
+  margin-left: 16px; 
+  margin-top: 19px; 
+}
+    @media screen and (max-width: 368px) {
+      .filter_image_container {
+        margin-top: 12px;
+        padding-inline: 20px;
+        max-width: 100%;
+        column-count: 1;
+        column-gap: 0px;
+      }
+      .filter_links {
+        padding-block: 12px;
+        margin-top: 18px;
+        width: 100%;
+        margin: 0 auto;
+      }
+    }
+  body {
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background: transparent;
+}
+    #sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000; /* Dark sky color */
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      opacity: 0.7;
+      animation: fallingStar 1s linear infinite;
+    }
+
+    @keyframes fallingStar {
+      0% {
+        transform: translateY(-10%);
+      }
+      100% {
+        transform: translateY(110%);
+      }
+    }
+
+    .link.clicked {
+      background-color: #333; /* Change the background color when clicked */
+      color: #fff; /* Change the text color when clicked */
+      transition: background-color 0.3s, color 0.3s; /* Add transition properties */
+    }  
+
+/* Style for the password input and button */
+    #password-prompt {
+      text-align: center;
+      margin-top: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #password-prompt label {
+      font-weight: bold;
+    }
+
+    #password-prompt input[type="password"] {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    #password-prompt button {
+      background-color: #0074d9;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #password-prompt button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Responsive styles for smaller screens */
+    @media screen and (max-width: 768px) {
+      #password-prompt {
+        margin-top: 50px;
+      }
+
+      #password-prompt label {
+        font-size: 14px;
+      }
+
+      #password-prompt input[type="password"] {
+        padding: 5px;
+        font-size: 14px;
+      }
+
+      #password-prompt button {
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <div id="password-prompt">
+    <label for="password">Enter the password:</label>
+    <input type="password" id="password">
+    <button onclick="checkPassword()">Submit</button>
+  </div>
+
+<div class="hidden-content" id="content" style="display: none;">
+
+   <div id="sky"></div>
+  <!-- filter links -->
+  <div class="filter_links">
+
+  <ul class="links">
+    <li class="active_box"></li>
+    <li class="link" data-filter="ALL">ALL</li>
+    <li class="link" data-filter="BIKE">BIKE</li>
+    <li class="link" data-filter="GOVT">GOVT</li>
+    <li class="link" data-filter="COLLEGE">COLLEGE</li>
+    <li class="link" data-filter="COMPANY">COMPANY</li>
+    <li class="link" data-filter="OTHERS">OTHERS</li>
+  </ul>
+</div>
+
+  <div class="filter_image_container">
+    <div class="image-set" data-filter-type="BIKE">
+     <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1pQn2NoMaJ3pu3KAPo92-_e9HsfgoZvF2"
+    alt="Bike Image 1"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 1</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1zKS6dcoVrVJ1CljYMOF89WEszDU6HBSG"
+    alt="Bike Image 2"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 2</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=14Vduz7Y86JUQF1KQL_FSYs9-bfAk7Heh"
+    alt="Bike Image 3"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 3</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1prwFPuXqsltB7a3FHIx3pvxClMYIEwit"
+    alt="Bike Image 4"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 4</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1pq7t6SHwdzMBIXKmAjgczmJ_ypC57w7b"
+    alt="Bike Image 5"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 5</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1pmhAeEEFXgG4bwKZRLEI7jTF5KeX52jg"
+    alt="Bike Image 6"
+    data-image-type="['BIKE']"
+  />
+   <div class="image-text">BIKE Image 6</div>
+    </div>
+    </div>
+  <!-- Add more image elements as needed -->
+<div class="image-set" data-filter-type="GOVT">
+     <div class="image-overlay">
+        <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1pQn2NoMaJ3pu3KAPo92-_e9HsfgoZvF2"
+    alt="Govt Image 1"
+    data-image-type="['GOVT']"
+  />
+   <div class="image-text">Govt Image 1</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1zKS6dcoVrVJ1CljYMOF89WEszDU6HBSG"
+    alt="Govt Image 2"
+    data-image-type="['GOVT']"
+  />
+  <div class="image-text">Govt Image 2</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1Jyxgn3XB6SwpAT2pEIpk-RRs7ItjGJAf"
+    alt="Govt Image 3"
+    data-image-type="['GOVT']"
+  />
+  <div class="image-text">Govt Image 3</div>
+    </div>
+   <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1-JEcLfUadpW52oBY-bjB9z0itCvmcM6Q"
+    alt="Govt Image 4"
+    data-image-type="['GOVT']"
+  />
+   <div class="image-text">Govt Image 4</div>
+    </div>
+    </div>
+  <!-- Add more image elements as needed -->
+<div class="image-set" data-filter-type="COLLEGE">
+     <div class="image-overlay">
+  <img
+    class="gallery_image"
+    src="https://drive.google.com/uc?id=1iXx_4OGqXvFVCzvwx8wMMTvyhk6h8yjy"
+    alt="College Image 1"
+    data-image-type="['COLLEGE']"
+  />
+  <div class="image-text">COLLEGE Image 1</div>
+    </div>
+  <!-- Add more image elements as needed -->
+  </div>
+  <div class="image-set" data-filter-type="COMPANY">
+  </div>
+  <div class="image-set" data-filter-type="OTHERS">
+  </div>
+</div>
+<!-- Modal for fullscreen preview -->
+
+
+  <div class="circular-button" id="downloadButton">
+    <div class="down-arrow"></div>
+  </div>
+
+</div>
+
+ <script>
+    const links = document.querySelectorAll('.link');
+    const filterLinks = Array.from(document.querySelectorAll(".link"));
+    const imageSets = Array.from(document.querySelectorAll(".image-set"));
+    const activeBox = document.querySelector(".active_box");
+    const galleryImages = Array.from(document.querySelectorAll(".gallery_image"));
+    const downloadButton = document.getElementById("downloadButton");
+
+
+    const correctPassword = "9121522521"; // Replace with your actual password
+
+    function checkPassword() {
+      const enteredPassword = document.getElementById("password").value;
+
+      if (enteredPassword === correctPassword) {
+        // Password is correct, reveal the hidden content
+        document.getElementById("password-prompt").style.display = "none";
+        document.getElementById("content").style.display = "block";
+      } else {
+        // Password is incorrect, show an alert
+        alert("Incorrect password. Access denied.");
+      }
+    }
+
+    downloadButton.style.display = "none"; // Initially hide it
+
+    downloadButton.addEventListener("click", () => {
+      const highlightedImage = galleryImages.find((img) =>
+        img.classList.contains("highlight")
+      );
+
+      if (highlightedImage) {
+        const downloadLink = document.createElement("a");
+        downloadLink.href = highlightedImage.src;
+        downloadLink.download = "image.jpg";
+        downloadLink.click();
+      }
+    });
+
+    galleryImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        // Remove highlight from all images
+        galleryImages.forEach((image) => {
+          image.classList.remove("highlight");
+        });
+
+        // Add highlight to the clicked image
+        img.classList.add("highlight");
+
+        // Show the download button
+        downloadButton.style.display = "block";
+      });
+    });
+
+    filterLinks.forEach((link, index) => {
+      link.addEventListener("click", () => {
+        let activeBoxPosition =
+          index * Number(getComputedStyle(link).width.slice(0, -2));
+        activeBox.style.transform = `translateX(${activeBoxPosition}px)`;
+        activeBox.style.width = getComputedStyle(link).width;
+
+        filterImages(link.getAttribute("data-filter"));
+      });
+    });
+
+    function filterImages(imageFilterType) {
+      imageSets.forEach((set) => {
+        const filterType = set.getAttribute("data-filter-type");
+        if (imageFilterType === "ALL" || filterType === imageFilterType) {
+          set.style.display = "block";
+        } else {
+          set.style.display = "none";
+        }
+      });
+    }
+
+    function createStar() {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.backgroundColor = getRandomColor();
+      star.style.left = getRandomPosition() + "px";
+      document.body.appendChild(star);
+      setTimeout(() => {
+        document.body.removeChild(star);
+      }, 1000);
+    }
+
+    function getRandomColor() {
+      const colors = ["#ffcc00", "#ff9900", "#ff66cc", "#66ff99", "#3399ff"];
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      return colors[randomIndex];
+    }
+
+    function getRandomPosition() {
+      return Math.floor(Math.random() * window.innerWidth);
+    }
+
+    // Create stars at random intervals
+    setInterval(createStar, 200);
+
+
+     links.forEach(link => {
+      link.addEventListener('click', () => {
+        // Remove the "clicked" class from all links
+        links.forEach(link => link.classList.remove('clicked'));
+
+        // Add the "clicked" class to the clicked link
+        link.classList.add('clicked');
+      });
+    });
+  </script>
+
+</body>
+</html>
